@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logspend"
+version = "0.1.0"
+description = "Find the log patterns that drive your observability bill (Datadog, CloudWatch, New Relic, Grafana) and generate tested drop/sample rules for the OpenTelemetry Collector, Vector and Fluent Bit."
+readme = "README.md"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{name = "Mohammad Hamarsheh"}]
+requires-python = ">=3.9"
+dependencies = []
+keywords = ["logging", "observability", "opentelemetry", "otel", "vector", "fluent-bit", "datadog", "cost", "finops", "log-reduction"]
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: System :: Logging",
+  "Topic :: System :: Monitoring",
+]
+
+[project.urls]
+Homepage = "https://github.com/hamarshehmhmd/logspend"
+Issues = "https://github.com/hamarshehmhmd/logspend/issues"
+
+[project.scripts]
+logspend = "logspend.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

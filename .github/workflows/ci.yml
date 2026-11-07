@@ -1,0 +1,71 @@
+name: CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: macos-latest
+            python: "3.13"
+          - os: windows-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install . pytest
+      - run: python -m pytest -q -rs
+
+  real-pipelines:
+    name: generated rules run in OTel Collector, Vector and Fluent Bit
+    runs-on: ubuntu-latest
+    env:
+      OTELCOL_VERSION: "0.165.0"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install . pytest
+      - name: install otelcol-contrib
+        run: |
+          curl -sSL -o /tmp/otel.tgz "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTELCOL_VERSION}/otelcol-contrib_${OTELCOL_VERSION}_linux_amd64.tar.gz"
+          tar -xzf /tmp/otel.tgz -C /tmp otelcol-contrib
+          echo "LOGSPEND_OTELCOL=/tmp/otelcol-contrib" >> "$GITHUB_ENV"
+      - name: install vector
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL https://sh.vector.dev | bash -s -- -y --prefix "$HOME/.vector"
+          echo "LOGSPEND_VECTOR=$HOME/.vector/bin/vector" >> "$GITHUB_ENV"
+      - name: install fluent-bit
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/fluent/fluent-bit/master/install.sh | sh
+          echo "LOGSPEND_FLUENTBIT=/opt/fluent-bit/bin/fluent-bit" >> "$GITHUB_ENV"
+      - name: versions
+        run: |
+          $LOGSPEND_OTELCOL --version
+          $LOGSPEND_VECTOR --version
+          $LOGSPEND_FLUENTBIT --version | head -1
+      - name: end-to-end (no skips allowed)
+        run: |
+          set -o pipefail
+          python -m pytest -q -rs tests/test_e2e_pipelines.py | tee e2e.txt
+          ! grep -q SKIPPED e2e.txt
+
+  install-script:
+    name: one-line install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: LOGSPEND_REF=${{ github.sha }} sh install.sh
+      - run: |
+          export PATH="$HOME/.local/bin:${PIPX_BIN_DIR:-/opt/pipx_bin}:$PATH"
+          logspend --version
+          logspend analyze examples/app.log --vendor datadog --plan plan.json
+          logspend simulate plan.json examples/app.log --fail-on-dropped-errors
