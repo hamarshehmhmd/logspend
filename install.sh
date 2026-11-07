@@ -18,12 +18,12 @@ elif command -v pipx >/dev/null 2>&1; then
   BIN="${PIPX_BIN_DIR:-$HOME/.local/bin}"
 else
   PY=""
-  for c in python3.13 python3.12 python3.11 python3.10 python3.9 python3; do
-    if command -v "$c" >/dev/null 2>&1 && "$c" -c 'import sys; sys.exit(sys.version_info < (3, 9))' 2>/dev/null; then
+  for c in python3.13 python3.12 python3.11 python3.10 python3; do
+    if command -v "$c" >/dev/null 2>&1 && "$c" -c 'import sys; sys.exit(sys.version_info < (3, 10))' 2>/dev/null; then
       PY="$c"; break
     fi
   done
-  [ -n "$PY" ] || die "need Python >= 3.9 (or uv / pipx) on PATH"
+  [ -n "$PY" ] || die "need Python >= 3.10 (or uv / pipx) on PATH"
   command -v git >/dev/null 2>&1 || die "need git to install from GitHub"
   VENV="$HOME/.local/share/logspend/venv"
   say "installing into $VENV with $PY"

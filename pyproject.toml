@@ -10,7 +10,7 @@ readme = "README.md"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE"]
 authors = [{name = "Mohammad Hamarsheh"}]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = []
 keywords = ["logging", "observability", "opentelemetry", "otel", "vector", "fluent-bit", "datadog", "cost", "finops", "log-reduction"]
 classifiers = [

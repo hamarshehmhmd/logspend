@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/hamarshehmhmd/logspend/actions/workflows/ci.yml/badge.svg)](https://github.com/hamarshehmhmd/logspend/actions/workflows/ci.yml)
 [![License: AGPL-3.0-or-later](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE)
-![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)
+![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 ![Dependencies: none](https://img.shields.io/badge/dependencies-none-brightgreen.svg)
 
 **Find the log patterns that drive your observability bill, and get drop/sample rules for the OpenTelemetry Collector, Vector or Fluent Bit that have been run in the real thing.**
@@ -40,7 +40,7 @@ pipx install git+https://github.com/hamarshehmhmd/logspend
 # or: pip install git+https://github.com/hamarshehmhmd/logspend
 ```
 
-Needs Python 3.9+. Tested on Linux, macOS and Windows.
+Needs Python 3.10+. Tested on Linux, macOS and Windows.
 
 ## Usage
 
@@ -120,7 +120,7 @@ processors:
 
 ## How it's tested
 
-`pytest` runs 36 unit/CLI tests plus end-to-end tests that load the generated config into **otelcol-contrib 0.165**, **Vector** and **Fluent Bit**, push 3,000 lines through, and assert the surviving lines are *exactly* the ones `logspend simulate` predicts (CI installs all three and fails on any skip). Run them locally with the binaries on `PATH`, or set `LOGSPEND_OTELCOL`, `LOGSPEND_VECTOR`, `LOGSPEND_FLUENTBIT`.
+`pytest` runs 33 unit and CLI tests plus end-to-end tests that load the generated config into **otelcol-contrib 0.165**, **Vector 0.61** and **Fluent Bit 5.1**, push 3,000 lines through, and assert the surviving lines are *exactly* the ones `logspend simulate` predicts (CI installs all three and fails on any skip). Run them locally with the binaries on `PATH`, or set `LOGSPEND_OTELCOL`, `LOGSPEND_VECTOR`, `LOGSPEND_FLUENTBIT`.
 
 ```sh
 pip install -e . pytest && pytest -q
